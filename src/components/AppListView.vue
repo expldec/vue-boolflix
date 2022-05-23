@@ -52,6 +52,7 @@ export default {
     },
     performCombinedSearch(searchTerm) {
       this.loading = true;
+      this.movieList = [];
       this.performSearch(
         "https://api.themoviedb.org/3/search/movie",
         searchTerm
@@ -67,6 +68,11 @@ export default {
     sortedList: function () {
       const sortedFeatures = this.movieList.slice(0).sort((a, b) => {
         return b.vote_average - a.vote_average;
+      });
+      sortedFeatures.forEach((element) => {
+        element.vote_average = "&starf;".repeat(
+          Math.ceil(element.vote_average / 2)
+        );
       });
       return sortedFeatures;
     },
