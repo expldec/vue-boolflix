@@ -6,7 +6,7 @@
 
       <p>{{ feature.original_title }}</p>
       <div>
-        {{ feature.original_language }} &centerdot;
+        <FlagIcons :languageCode="feature.original_language" /> &centerdot;
         {{ feature.vote_average }} &star;
       </div>
     </div>
@@ -14,10 +14,14 @@
 </template>
 
 <script>
+import FlagIcons from "./FlagIcons.vue";
 export default {
   name: "AppMovieCard",
   props: {
     feature: Object,
+  },
+  components: {
+    FlagIcons,
   },
 };
 </script>
