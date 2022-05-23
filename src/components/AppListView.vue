@@ -2,7 +2,7 @@
   <AppLoading v-if="loading" />
   <div v-else class="app-list__container container">
     <AppListFilter @clickedSearch="performCombinedSearch($event)" />
-    <div class="row row-cols-2 row-cols-md-4 g-2">
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2">
       <AppMovieCard
         v-for="(item, index) in sortedList"
         :key="index"
@@ -73,6 +73,10 @@ export default {
         element.vote_average = "&starf;".repeat(
           Math.ceil(element.vote_average / 2)
         );
+        element.truncated_overview =
+          element.overview.length < 200
+            ? element.overview
+            : element.overview.slice(0, 200) + "...";
       });
       return sortedFeatures;
     },

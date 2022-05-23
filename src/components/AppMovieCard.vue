@@ -1,23 +1,36 @@
 <template>
   <div class="col">
-    <div class="feature-card p-2 text-center">
-      <img
+    <div
+      class="feature-card text-center"
+      :style="{
+        backgroundImage: `url(https://image.tmdb.org/t/p/w342${feature.poster_path})`,
+      }"
+    >
+      <!-- <img
         class="img-fluid"
         :src="`https://image.tmdb.org/t/p/w342${feature.poster_path}`"
         alt=""
-      />
-      <h2 class="feature-title fw-bold mt-3">
-        {{ feature.title ? feature.title : feature.name }}
-      </h2>
+      /> -->
+      <div class="feature-info p-2">
+        <h2 class="feature-title fw-bold mt-3">
+          {{ feature.title ? feature.title : feature.name }}
+        </h2>
 
-      <p class="feature-ogtitle">{{ feature.original_title }}</p>
-      <div class="feature-details">
-        <FlagIcons :languageCode="feature.original_language" />
-        <span
-          class="feature-rating ms-2"
-          v-if="feature.vote_average"
-          v-html="feature.vote_average"
-        ></span>
+        <p
+          class="feature-ogtitle"
+          v-if="feature.original_title != feature.title"
+        >
+          {{ feature.original_title }}
+        </p>
+        <p class="feature-overview">{{ feature.truncated_overview }}</p>
+        <div class="feature-details">
+          <FlagIcons :languageCode="feature.original_language" />
+          <span
+            class="feature-rating ms-2"
+            v-if="feature.vote_average"
+            v-html="feature.vote_average"
+          ></span>
+        </div>
       </div>
     </div>
   </div>
@@ -41,17 +54,37 @@ export default {
 @import "../style/common.scss";
 
 .feature-card {
-  background-color: $background-secondary;
-  height: 100%;
+  // background-color: $background-secondary;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 350px;
+  max-width: 228px;
+  position: relative;
+  &:hover {
+    .feature-info {
+      display: block;
+      height: 100%;
+      background-color: rgba(black, 0.7);
+    }
+  }
+  .feature-info {
+    display: none;
+  }
   .feature-title {
     font-size: 1.2rem;
     text-transform: uppercase;
     & ~ * {
-      color: $text-lowcontrast-color;
       margin-bottom: 0.2rem;
       font-weight: 500;
       font-size: 0.8rem;
     }
+  }
+  .feature-ogtitle {
+    color: $text-lowcontrast-color;
+  }
+  .feature-overview {
+    color: white;
   }
   .feature-details * {
     vertical-align: middle;
