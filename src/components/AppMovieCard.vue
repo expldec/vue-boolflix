@@ -2,7 +2,9 @@
   <div class="col">
     <div class="feature-card p-2 text-center">
       <img class="img-fluid" alt="" />
-      <h2 class="feature-title fw-bold mt-3">{{ feature.title }}</h2>
+      <h2 class="feature-title fw-bold mt-3">
+        {{ feature.title ? feature.title : feature.name }}
+      </h2>
 
       <p>{{ feature.original_title }}</p>
       <div>
