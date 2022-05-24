@@ -2,7 +2,7 @@
   <AppLoading v-if="loading" />
   <div v-else class="app-list__container container">
     <AppListFilter @clickedSearch="performCombinedSearch($event)" />
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2">
       <AppMovieCard
         v-for="(item, index) in sortedList"
         :key="index"
@@ -67,7 +67,7 @@ export default {
   computed: {
     sortedList: function () {
       const sortedFeatures = this.movieList.slice(0).sort((a, b) => {
-        return b.vote_average - a.vote_average;
+        return b.popularity - a.popularity;
       });
       sortedFeatures.forEach((element) => {
         element.vote_average = "&starf;".repeat(

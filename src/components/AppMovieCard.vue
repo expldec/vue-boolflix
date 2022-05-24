@@ -2,17 +2,16 @@
   <div class="col">
     <div
       class="feature-card text-center"
+      :class="{ 'no-image': feature.poster_path === null }"
       :style="{
         backgroundImage: `url(https://image.tmdb.org/t/p/w342${feature.poster_path})`,
       }"
     >
-      <!-- <img
-        class="img-fluid"
-        :src="`https://image.tmdb.org/t/p/w342${feature.poster_path}`"
-        alt=""
-      /> -->
+      <div v-if="!feature.poster_path" class="feature-fallback">
+        {{ `${feature.title ? feature.title : feature.name}` }}
+      </div>
       <div class="feature-info p-2">
-        <h2 class="feature-title fw-bold mt-3">
+        <h2 class="feature-title fw-bold mt-5">
           {{ feature.title ? feature.title : feature.name }}
         </h2>
 
@@ -46,6 +45,11 @@ export default {
   components: {
     FlagIcons,
   },
+  methods: {
+    getYear(date) {
+      return date.split("-")[0];
+    },
+  },
 };
 </script>
 
@@ -59,14 +63,30 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   height: 350px;
-  max-width: 228px;
+  width: 228px;
+  margin: auto;
+  box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.5);
   position: relative;
+  &.no-image {
+    background-color: $background-secondary;
+  }
   &:hover {
+    .feature-fallback {
+      display: none;
+    }
     .feature-info {
       display: block;
       height: 100%;
       background-color: rgba(black, 0.7);
     }
+  }
+  .feature-fallback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: 700;
   }
   .feature-info {
     display: none;
