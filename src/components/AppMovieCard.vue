@@ -10,25 +10,30 @@
       <div v-if="!feature.poster_path" class="feature-fallback">
         {{ `${feature.title ? feature.title : feature.name}` }}
       </div>
-      <div class="feature-info p-2">
-        <h2 class="feature-title fw-bold mt-5">
+      <div class="feature-info p-4">
+        <h2 class="feature-title fw-bold mt-5 mb-0">
           {{ feature.title ? feature.title : feature.name }}
         </h2>
 
-        <p
+        <div
           class="feature-ogtitle"
           v-if="feature.original_title != feature.title"
         >
           {{ feature.original_title }}
-        </p>
-        <p class="feature-overview">{{ feature.truncated_overview }}</p>
+        </div>
+        <div class="feature-overview mt-3">
+          {{ feature.truncated_overview }}
+        </div>
         <div class="feature-details">
-          <FlagIcons :languageCode="feature.original_language" />
-          <span
-            class="feature-rating ms-2"
-            v-if="feature.vote_average"
-            v-html="feature.vote_average"
-          ></span>
+          <div>
+            <FlagIcons :languageCode="feature.original_language" />
+            <span
+              class="feature-rating ms-2"
+              v-if="feature.vote_average"
+              v-html="feature.vote_average"
+            ></span>
+          </div>
+          <div class="feature-genres">{{ getGenres(feature.genre_ids) }}</div>
         </div>
       </div>
     </div>
@@ -41,13 +46,19 @@ export default {
   name: "AppMovieCard",
   props: {
     feature: Object,
+    genres: Map,
   },
   components: {
     FlagIcons,
   },
   methods: {
-    getYear(date) {
-      return date.split("-")[0];
+    getGenres(genreArray) {
+      const genreNames = [];
+      genreArray.forEach((element) => {
+        genreNames.push(this.genres.get(element));
+      });
+      console.log(genreNames);
+      return genreNames.join(", ");
     },
   },
 };
@@ -62,8 +73,8 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 350px;
-  width: 228px;
+  height: 525px;
+  width: 342px;
   margin: auto;
   box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.5);
   position: relative;
@@ -92,19 +103,21 @@ export default {
     display: none;
   }
   .feature-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     text-transform: uppercase;
     & ~ * {
       margin-bottom: 0.2rem;
       font-weight: 500;
-      font-size: 0.8rem;
     }
   }
   .feature-ogtitle {
     color: $text-lowcontrast-color;
+    font-size: 1rem;
   }
-  .feature-overview {
+  .feature-overview,
+  .feature-genres {
     color: white;
+    font-size: 1rem;
   }
   .feature-details * {
     vertical-align: middle;

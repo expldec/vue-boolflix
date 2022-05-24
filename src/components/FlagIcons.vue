@@ -87,6 +87,10 @@ export default {
           return "ara";
         case "fa":
           return "ir";
+        case "ml":
+          return "in";
+        case "kn":
+          return "in";
         default:
           return "unknown";
       }

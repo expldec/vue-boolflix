@@ -2,11 +2,12 @@
   <AppLoading v-if="loading" />
   <div v-else class="app-list__container container">
     <AppListFilter @clickedSearch="performCombinedSearch($event)" />
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
       <AppMovieCard
         v-for="(item, index) in sortedList"
         :key="index"
         :feature="item"
+        :genres="genres"
       />
     </div>
   </div>
@@ -29,27 +30,39 @@ export default {
     return {
       movieList: [],
       loading: false,
-      filter: {
-        genre: "",
-        artist: "",
-      },
+      genres: new Map(),
+      api_key: "e09aa4b6cedf910831b4920c78e04281",
     };
   },
   methods: {
-    performSearch(url, searchTerm, destination) {
+    performSearch(url, searchTerm, type, destination) {
       axios
         .get(url, {
           params: {
-            api_key: "e09aa4b6cedf910831b4920c78e04281",
+            api_key: this.api_key,
             lang: "en-US",
             page: 1,
             query: searchTerm,
           },
         })
         .then((resp) => {
-          console.log(resp);
           resp.data.results.forEach((el) => {
+            el.type = type;
             destination.push(el);
+          });
+        });
+    },
+    getGenresfromApi(url) {
+      axios
+        .get(url, {
+          params: {
+            api_key: this.api_key,
+            lang: "en-US",
+          },
+        })
+        .then((resp) => {
+          resp.data.genres.forEach((genre) => {
+            this.genres.set(genre.id, genre.name);
           });
         });
     },
@@ -59,11 +72,13 @@ export default {
       this.performSearch(
         "https://api.themoviedb.org/3/search/movie",
         searchTerm,
+        "movie",
         this.movieList
       );
       this.performSearch(
         "https://api.themoviedb.org/3/search/tv",
         searchTerm,
+        "tv",
         this.movieList
       );
       setTimeout(() => {
@@ -81,14 +96,17 @@ export default {
           Math.ceil(element.vote_average / 2)
         );
         element.truncated_overview =
-          element.overview.length < 200
+          element.overview.length < 160
             ? element.overview
-            : element.overview.slice(0, 200) + "...";
+            : element.overview.slice(0, 160) + "...";
       });
       return sortedFeatures;
     },
   },
-  created() {},
+  created() {
+    this.getGenresfromApi("https://api.themoviedb.org/3/genre/movie/list");
+    this.getGenresfromApi("https://api.themoviedb.org/3/genre/tv/list");
+  },
 };
 </script>
 
