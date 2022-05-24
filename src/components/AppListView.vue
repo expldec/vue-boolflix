@@ -36,7 +36,7 @@ export default {
     };
   },
   methods: {
-    performSearch(url, searchTerm) {
+    performSearch(url, searchTerm, destination) {
       axios
         .get(url, {
           params: {
@@ -47,7 +47,10 @@ export default {
           },
         })
         .then((resp) => {
-          this.movieList = this.movieList.concat(resp.data.results);
+          console.log(resp);
+          resp.data.results.forEach((el) => {
+            destination.push(el);
+          });
         });
     },
     performCombinedSearch(searchTerm) {
@@ -55,10 +58,14 @@ export default {
       this.movieList = [];
       this.performSearch(
         "https://api.themoviedb.org/3/search/movie",
-        searchTerm
+        searchTerm,
+        this.movieList
       );
-      this.performSearch("https://api.themoviedb.org/3/search/tv", searchTerm);
-      console.log(this.movieList);
+      this.performSearch(
+        "https://api.themoviedb.org/3/search/tv",
+        searchTerm,
+        this.movieList
+      );
       setTimeout(() => {
         this.loading = false;
       }, 500);
