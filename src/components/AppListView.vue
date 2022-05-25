@@ -1,10 +1,14 @@
 <template>
   <AppLoading v-if="loading" />
   <div v-else class="app-list__container container">
-    <AppListFilter @clickedSearch="clickedSearch($event)" />
+    <AppListFilter
+      @clickedSearch="clickedSearch($event)"
+      @pickedGenre="updateFilter('genre', $event)"
+      :genres="genresInList"
+    />
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
       <AppMovieCard
-        v-for="(item, index) in sortedList"
+        v-for="(item, index) in enrichedList"
         :key="index"
         :feature="item"
         :genres="genres"
@@ -30,12 +34,18 @@ export default {
     return {
       movieList: [],
       loading: false,
+      filter: {
+        genre: "",
+      },
       genres: new Map(),
       casts: new Map(),
       api_key: "e09aa4b6cedf910831b4920c78e04281",
     };
   },
   methods: {
+    updateFilter(key, filter) {
+      this.filter[key] = filter;
+    },
     getGenresfromApi(url) {
       return axios
         .get(url, {
@@ -156,14 +166,9 @@ export default {
     },
   },
   computed: {
-    sortedList: function () {
-      const sortedFeatures = this.movieList.slice(0).sort((a, b) => {
-        return b.popularity - a.popularity;
-      });
-      sortedFeatures.forEach((element) => {
-        element.vote_average = "&starf;".repeat(
-          Math.ceil(element.vote_average / 2)
-        );
+    enrichedList: function () {
+      this.movieList.forEach((element) => {
+        element.stars = "&starf;".repeat(Math.ceil(element.vote_average / 2));
         element.truncated_overview =
           element.overview.length < 180
             ? element.overview
@@ -174,7 +179,28 @@ export default {
         });
         element.cast = featureCast.slice(0, 5).join(", ");
       });
-      return sortedFeatures;
+      const filteredFeatures = this.movieList.filter((item) => {
+        console.log(this.filter.genre);
+        return (
+          item.genre_ids.includes(this.filter.genre) || this.filter.genre === ""
+        );
+      });
+
+      filteredFeatures.sort((a, b) => {
+        return b.popularity - a.popularity;
+      });
+      return filteredFeatures;
+    },
+    genresInList: function () {
+      const genresInList = new Map();
+      this.enrichedList.forEach((element) => {
+        element.genre_ids.forEach((genre) => {
+          if (!genresInList.has(genre)) {
+            genresInList.set(genre, this.genres.get(genre));
+          }
+        });
+      });
+      return genresInList;
     },
   },
   created() {

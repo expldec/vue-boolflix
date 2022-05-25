@@ -39,8 +39,8 @@
             <FlagIcons :languageCode="feature.original_language" />
             <span
               class="feature-rating ms-2"
-              v-if="feature.vote_average"
-              v-html="feature.vote_average"
+              v-if="feature.stars"
+              v-html="feature.stars"
             ></span>
           </div>
           <div class="feature-genres mt-3">
