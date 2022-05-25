@@ -11,20 +11,30 @@
         {{ `${feature.title ? feature.title : feature.name}` }}
       </div>
       <div class="feature-info p-4">
-        <h2 class="feature-title fw-bold mt-5 mb-0">
+        <h2 class="feature-title fw-bold mt-3 mb-0">
           {{ feature.title ? feature.title : feature.name }}
         </h2>
 
         <div
           class="feature-ogtitle"
-          v-if="feature.original_title != feature.title"
+          v-if="
+            feature.original_title != feature.title ||
+            feature.original_name != feature.name
+          "
         >
-          {{ feature.original_title }}
+          {{
+            feature.original_title
+              ? feature.original_title
+              : feature.original_name
+          }}
         </div>
         <div class="feature-overview mt-3">
           {{ feature.truncated_overview }}
         </div>
-        <div class="feature-details">
+        <div class="feature-cast mt-3">
+          <strong>Cast: </strong>{{ feature.cast }}
+        </div>
+        <div class="feature-details mt-3">
           <div>
             <FlagIcons :languageCode="feature.original_language" />
             <span
@@ -33,7 +43,9 @@
               v-html="feature.vote_average"
             ></span>
           </div>
-          <div class="feature-genres">{{ getGenres(feature.genre_ids) }}</div>
+          <div class="feature-genres mt-3">
+            {{ getGenres(feature.genre_ids) }}
+          </div>
         </div>
       </div>
     </div>
@@ -57,7 +69,6 @@ export default {
       genreArray.forEach((element) => {
         genreNames.push(this.genres.get(element));
       });
-      console.log(genreNames);
       return genreNames.join(", ");
     },
   },
@@ -109,6 +120,10 @@ export default {
       margin-bottom: 0.2rem;
       font-weight: 500;
     }
+  }
+  .feature-cast {
+    font-weight: 400;
+    font-size: 0.9rem;
   }
   .feature-ogtitle {
     color: $text-lowcontrast-color;
